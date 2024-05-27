@@ -1,0 +1,19 @@
+services:
+  newman:
+    command: sleep infinity
+    container_name: "ddev-${DDEV_SITENAME}-newman"
+    build:
+      context: ./newman
+      args:
+        BASE_IMAGE: postman/newman:6-ubuntu
+        username: $USER
+        uid: $DDEV_UID
+        gid: $DDEV_GID
+    entrypoint: []
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
+    volumes:
+      - ../:/etc/newman
+      - .:/mnt/ddev_config:ro
+      - ddev-global-cache:/mnt/ddev-global-cache

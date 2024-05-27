@@ -1,0 +1,7 @@
+#!/bin/sh
+
+## Description: Run newman
+## Usage: newman [args]
+## Example: "ddev newman my_collection.json -e environment.json
+## ExecRaw: true
+newman "$@"

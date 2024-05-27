@@ -1,0 +1,7 @@
+name: ddev-newman
+project_files:
+  - docker-compose.newman.yaml
+  - ./newman
+  - ./commands/newman/newman
+post_install_actions:
+ - echo "Newman has been added successfully."
