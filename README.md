@@ -12,4 +12,12 @@ ddev get metadrop/ddev-newman
 
 ## Usage
 
-TBD
+```
+ddev newman [args]
+```
+
+Example:
+
+```
+ddev newman my_collection.json -e environment.json
+```
