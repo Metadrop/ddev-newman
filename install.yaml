@@ -1,4 +1,4 @@
-name: ddev-newman
+name: newman
 project_files:
   - docker-compose.newman.yaml
   - ./newman
