@@ -8,21 +8,27 @@ Allows running [newman](https://www.npmjs.com/package/newman) on ddev setups. Us
 
 ## Installation
 
-Install this addon by running:
+For DDEV v1.23.5 or above run
 
+```sh
+ddev add-on get metadrop/ddev-newman
 ```
+
+For earlier versions of DDEV run
+
+```sh
 ddev get metadrop/ddev-newman
 ```
 
 ## Usage
 
-```
+```sh
 ddev newman [args]
 ```
 
 Example:
 
-```
+```sh
 ddev newman my_collection.json -e environment.json
 ```
 
