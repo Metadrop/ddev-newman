@@ -20,10 +20,11 @@ ddev get metadrop/ddev-newman
 ddev newman [args]
 ```
 
-Example:
+Example using provided exmaple files:
 
 ```
-ddev newman my_collection.json -e environment.json
+ddev newman run postman/collections/example_cache_headers.postman_collection.json -e postman/envs/example_ddev.postman_environment.json
+
 ```
 
 To view all the possible command line options, please [check the documentation](https://www.npmjs.com/package/newman#command-line-options).
