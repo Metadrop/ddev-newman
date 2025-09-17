@@ -1,4 +1,5 @@
 {
+  "#ddev-generated": "true",
   "info": {
     "_postman_id": "d36c171e-acef-4697-ba28-1ca4b935693d",
     "name": "Example - Cache headers",
@@ -14,7 +15,7 @@
           "script": {
             "exec": [
               "pm.test(\"Drupal Dynamic Cache is cacheable\", function () {",
-              "    pm.response.to.have.header('X-drupal-dynamic-cache');",
+              "    pm.response.to.have.header('X-Drupal-Dynamic-Cache');",
               "    pm.expect(['MISS', 'HIT'].includes(pm.response.headers.get('X-Drupal-Dynamic-Cache'))).to.be.true",
               "});",
               ""
