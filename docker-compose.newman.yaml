@@ -3,7 +3,7 @@ services:
     command: sleep infinity
     container_name: "ddev-${DDEV_SITENAME}-newman"
     build:
-      context: ./newman
+      context: ./newmanBuild
       args:
         BASE_IMAGE: postman/newman:6-ubuntu
         username: $USER

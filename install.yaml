@@ -1,7 +1,17 @@
 name: newman
 project_files:
   - docker-compose.newman.yaml
-  - ./newman
+  - ./newmanBuild
+  - ./postman
   - ./commands/newman/newman
 post_install_actions:
- - echo "Newman has been added successfully."
+  - |
+    # Check if postman directory doesn't exist or is empty in project root
+    if [ ! -d "${DDEV_APPROOT}/postman" ] || [ -z "$(ls -A ${DDEV_APPROOT}/postman 2>/dev/null)" ]; then
+      cp -r ${DDEV_APPROOT}/.ddev/postman ${DDEV_APPROOT}/
+      echo "Postman folder has been copied from .ddev to project root"
+    else
+      echo "Postman folder already exists and contains files in project root"
+    fi
+  - cp -r ${DDEV_APPROOT}/.ddev/postman ${DDEV_APPROOT}/
+  - echo "Newman has been added successfully."
