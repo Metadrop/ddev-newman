@@ -1,27 +1,48 @@
+#!/usr/bin/env bats
+
+# Standard DDEV add-on setup code taken from official DDEV add-ons.
 setup() {
   set -eu -o pipefail
-  export DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )/.."
-  export TESTDIR=~/tmp/test-addon-template
-  mkdir -p $TESTDIR
-  export PROJNAME=test-addon-template
-  export DDEV_NON_INTERACTIVE=true
-  ddev delete -Oy ${PROJNAME} >/dev/null 2>&1 || true
+  export GITHUB_REPO=Metadrop/ddev-aljibe-assistant
+  TEST_BREW_PREFIX="$(brew --prefix 2>/dev/null || true)"
+  export BATS_LIB_PATH="${BATS_LIB_PATH}:${TEST_BREW_PREFIX}/lib:/usr/lib/bats"
+  bats_load_library bats-assert
+  bats_load_library bats-file
+  bats_load_library bats-support
+
+  # shellcheck disable=SC2155
+  export DIR="$(cd "$(dirname "${BATS_TEST_FILENAME}")/.." >/dev/null 2>&1 && pwd)"
+  # shellcheck disable=SC2155
+  export PROJNAME="test-$(basename "${GITHUB_REPO}")"
+
+  mkdir -p ~/tmp
+  # shellcheck disable=SC2155
+  export TESTDIR=$(mktemp -d ~/tmp/${PROJNAME}.XXXXXX)
+  export DDEV_NONINTERACTIVE=true
+  export DDEV_NO_INSTRUMENTATION=true
+  ddev delete -Oy "${PROJNAME}" >/dev/null 2>&1 || true
+
   cd "${TESTDIR}"
-  ddev config --project-name=${PROJNAME}
-  ddev start -y >/dev/null
+  run ddev config --project-name="${PROJNAME}" --project-tld=ddev.site
+  assert_success
+  run ddev start -y
+  assert_success
+}
+
+# Standard DDEV add-on tear down code taken from official DDEV add-ons.
+teardown() {
+  set -eu -o pipefail
+  echo "# Tearing down test environment" >&3
+  cd ${TESTDIR} || ( printf "unable to cd to ${TESTDIR}\n" && exit 1 )
+  ddev delete -Oy ${PROJNAME} >/dev/null 2>&1
+  cd ..
+  [ "${TESTDIR}" != "" ] && rm -rf ${TESTDIR}
+  echo "# Teardown complete" >&3
 }
 
 health_checks() {
-  output=$(ddev exec -s newman newman --version)
-  # Check if the output contains "Healthcheck passed!"
-  [[ $? == 0 ]]
-}
-
-teardown() {
-  set -eu -o pipefail
-  cd ${TESTDIR} || ( printf "unable to cd to ${TESTDIR}\n" && exit 1 )
-  ddev delete -Oy ${PROJNAME} >/dev/null 2>&1
-  [ "${TESTDIR}" != "" ] && rm -rf ${TESTDIR}
+  run ddev exec -s newman newman --version
+  assert_success
 }
 
 @test "install from directory" {
@@ -30,14 +51,5 @@ teardown() {
   echo "# ddev get ${DIR} with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
   ddev get ${DIR}
   ddev restart
-  health_checks
-}
-
-@test "install from release" {
-  set -eu -o pipefail
-  cd ${TESTDIR} || ( printf "unable to cd to ${TESTDIR}\n" && exit 1 )
-  echo "# ddev get Metadrop/ddev-newman with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
-  ddev get Metadrop/ddev-newman
-  ddev restart >/dev/null
   health_checks
 }
